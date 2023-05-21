@@ -1,7 +1,7 @@
 from logging import log
 import openpyxl
-import database_connection
-import database_insert
+import database_connection as dbconn
+import database_insert as dbins
 from dotenv import load_dotenv
 from datetime import datetime
 from sqlalchemy import create_engine
@@ -15,10 +15,10 @@ import pandas as pd
 import pyodbc
 load_dotenv()
 
-connection = database_connection.create_connection_microsoftsql(f"{os.environ['driver']}",f"{os.environ['servidor']}",f"{os.environ['bancodedados']}",f"{os.environ['senha']}",f"{os.environ['usuario']}")
+connection = dbconn.microsoftsql_conn(f"{os.environ['driver']}",f"{os.environ['servidor']}",f"{os.environ['bancodedados']}",f"{os.environ['senha']}",f"{os.environ['usuario']}")
 
 def work_day():
-    connection = database_connection.create_connection_microsoftsql(f"{os.environ['driver']}",f"{os.environ['servidor']}",f"{os.environ['bancodedadosdias']}",f"{os.environ['senha']}",f"{os.environ['usuario']}")
+    connection = dbconn.microsoftsql_conn(f"{os.environ['driver']}",f"{os.environ['servidor']}",f"{os.environ['bancodedadosdias']}",f"{os.environ['senha']}",f"{os.environ['usuario']}")
     SELECT = ('''SELECT "data" FROM "dias_uteis"''')
     SELECT = connection.execute(SELECT)
     SELECT = SELECT.fetchall()
@@ -222,25 +222,25 @@ def inserindo_na_base(CONEXAO, dataframe):
         ,infAdicionais
         ,cnpjFundo)
         values(
-         {database_insert.db_str(str(dataframe["linkArq"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["denomSocial"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["categoriaDoc"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["tipoDoc"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["especieDocumento"].iloc[linha]))}
-        ,{database_insert.db_date(dataframe["dtEntrega"].iloc[linha])}
-        ,{database_insert.db_str(str(dataframe["dtRecebido"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["status"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["descStatus"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["analisado"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["situacaoDoc"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["altaPrioridade"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["formatoDtReferencia"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["versao"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["modalidade"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["descModalidade"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["nomePregao"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["infAdicionais"].iloc[linha]))}
-        ,{database_insert.db_str(str(dataframe["cnpjFundo"].iloc[linha]))});''')
+         {dbins.db_str(str(dataframe["linkArq"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["denomSocial"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["categoriaDoc"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["tipoDoc"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["especieDocumento"].iloc[linha]))}
+        ,{dbins.db_date(dataframe["dtEntrega"].iloc[linha])}
+        ,{dbins.db_str(str(dataframe["dtRecebido"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["status"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["descStatus"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["analisado"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["situacaoDoc"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["altaPrioridade"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["formatoDtReferencia"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["versao"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["modalidade"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["descModalidade"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["nomePregao"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["infAdicionais"].iloc[linha]))}
+        ,{dbins.db_str(str(dataframe["cnpjFundo"].iloc[linha]))});''')
         print(SQL)
         CONEXAO.execute(SQL)
         CONEXAO.commit()
